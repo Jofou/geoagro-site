@@ -4,3 +4,15 @@
 
 [functions]
   node_bundler = "esbuild"
+
+[[redirects]]
+  from = "https://app.geoagro.ca/*"
+  to = "https://019e4a9a-9252-3465-af7b-92c46fe0dd38.share.connect.posit.cloud/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "https://app.geoagro.ca"
+  to = "https://019e4a9a-9252-3465-af7b-92c46fe0dd38.share.connect.posit.cloud/"
+  status = 200
+  force = true

@@ -5,10 +5,6 @@
 [functions]
   node_bundler = "esbuild"
 
-[[redirects]]
-  from = "/*"
-  to = "https://019e4a9a-9252-3465-af7b-92c46fe0dd38.share.connect.posit.cloud/:splat"
-  status = 302
-  force = true
-  [redirects.conditions]
-    Host = ["app.geoagro.ca"]
+[[edge_functions]]
+  path = "/*"
+  function = "app-redirect"

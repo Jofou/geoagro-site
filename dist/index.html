@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <script>
+    if (window.location.hostname === 'app.geoagro.ca') {
+      window.location.replace(
+        'https://019e4a9a-9252-3465-af7b-92c46fe0dd38.share.connect.posit.cloud' +
+        window.location.pathname +
+        window.location.search
+      );
+    }
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GeoAgro — Bientôt disponible</title>

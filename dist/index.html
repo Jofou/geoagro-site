@@ -1,221 +1,201 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <script>
-    if (window.location.hostname === 'app.geoagro.ca') {
-      window.location.replace(
-        'https://019e4a9a-9252-3465-af7b-92c46fe0dd38.share.connect.posit.cloud' +
-        window.location.pathname +
-        window.location.search
-      );
-    }
-  </script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GeoAgro — Bientôt disponible</title>
-  <meta name="description" content="GeoAgro développe des outils de données géospatiales pour l'agriculture de précision — cartographie des champs, analyse des sols, et aide à la décision agronomique adaptés aux réalités du Canada." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-    body {
-      background: #0f2018;
-      color: #f0ebe0;
-      font-family: 'Outfit', system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-    :focus-visible { outline: 2px solid #52b788; outline-offset: 3px; border-radius: 3px; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Layout */
-    .page { position: relative; min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
-    /* Background SVG */
-    .bg-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-
-    /* Grain overlay */
-    .grain {
-      pointer-events: none;
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 50;
-      mix-blend-mode: soft-light;
-      opacity: 0.35;
-    }
-
-    /* Content */
-    .content { position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100vh; }
-
-    /* Header */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.5rem 2rem;
-      border-bottom: 1px solid rgba(82,183,136,0.1);
-    }
-    .logo { display: flex; align-items: center; gap: 0.75rem; }
-    .logo-text {
-      font-size: 1.25rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: #d4a853;
-      font-weight: 500;
-    }
-    .header-right { display: flex; align-items: center; gap: 1.25rem; }
-    .coords {
-      font-family: 'Outfit', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      color: #4a8c64;
-      opacity: 0.7;
-      font-weight: 300;
-      display: none;
-    }
-    @media(min-width: 640px) { .coords { display: block; } }
-
-    /* Lang toggle */
-    .lang-btn {
-      background: transparent;
-      border: 1px solid rgba(82,183,136,0.25);
-      border-radius: 999px;
-      padding: 0.35rem 0.85rem;
-      color: #8cad9a;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      cursor: pointer;
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .lang-btn:hover { color: #d4a853; border-color: rgba(212,168,83,0.45); }
-    .lang-current { color: #d4a853; }
-    .lang-sep { margin: 0 0.4rem; color: #2d6a4f; }
-
-    /* Main section */
-    main { flex: 1; display: flex; align-items: center; padding: 3rem 2rem; }
-    @media(min-width: 768px) { main { padding: 3rem 4rem; } }
-    .hero { max-width: 42rem; animation: fadeUp 0.9s ease both; }
-
-    /* Badge */
-    .badge { display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 2.5rem; }
-    .badge-dot {
-      width: 0.5rem; height: 0.5rem;
-      border-radius: 50%;
-      background: #52b788;
-      box-shadow: 0 0 8px #52b788;
-      animation: pulse 2s infinite;
-    }
-    .badge-text { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: #52b788; font-weight: 400; }
-
-    /* Headline */
-    h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.8rem, 6vw, 5rem);
-      color: #f0ebe0;
-      font-weight: 600;
-      line-height: 1.08;
-      margin-bottom: 1.5rem;
-    }
-    h1 em { color: #d4a853; font-style: italic; }
-
-    .divider { width: 3rem; height: 2px; background: linear-gradient(90deg, #52b788, transparent); margin-bottom: 2rem; }
-
-    p.desc { color: #8cad9a; font-size: 1rem; font-weight: 300; line-height: 1.625; max-width: 38ch; margin-bottom: 3rem; }
-
-    /* Success */
-    .success-box {
-      display: flex; align-items: center; gap: 0.75rem;
-      padding: 1rem 1.5rem;
-      border-radius: 0.5rem;
-      background: rgba(82,183,136,0.1);
-      border: 1px solid rgba(82,183,136,0.25);
-      color: #74c69d;
-      font-size: 0.9rem;
-    }
-
-    /* Form */
-    .form-row { display: flex; flex-direction: column; gap: 0.75rem; }
-    @media(min-width: 640px) { .form-row { flex-direction: row; } }
-
-    .input-wrap { flex: 1; position: relative; }
-    input[type="email"] {
-      width: 100%;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(82,183,136,0.2);
-      border-radius: 6px;
-      padding: 0.75rem 1rem;
-      color: #f0ebe0;
-      font-size: 0.9rem;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 300;
-      outline: none;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    input[type="email"]::placeholder { color: rgba(138,180,160,0.35); }
-    input[type="email"]:focus { border-color: rgba(82,183,136,0.5); background: rgba(255,255,255,0.06); }
-    input[type="email"].error { border-color: rgba(220,100,80,0.6); }
-
-    .field-error { color: rgba(220,100,80,0.9); font-size: 0.75rem; margin-top: 0.4rem; }
-
-    .submit-btn {
-      background: linear-gradient(135deg, #2d6a4f 0%, #40916c 100%);
-      color: #f0ebe0;
-      border: none;
-      border-radius: 6px;
-      padding: 0.75rem 1.5rem;
-      font-size: 0.85rem;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
-      box-shadow: 0 4px 16px rgba(40,100,70,0.35);
-      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
-      display: flex; align-items: center; gap: 0.5rem;
-    }
-    .submit-btn:hover:not(:disabled) {
-      background: linear-gradient(135deg, #40916c 0%, #52b788 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(40,100,70,0.5);
-    }
-    .submit-btn:disabled { background: rgba(45,106,79,0.5); cursor: default; }
-    .spin { animation: spin 1s linear infinite; }
-
-    .trust { margin-top: 1.25rem; color: #3a6349; font-size: 0.78rem; font-weight: 300; }
-
-    /* Footer */
-    footer {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      padding: 1.25rem 2rem;
-      border-top: 1px solid rgba(82,183,136,0.08);
-    }
-    @media(min-width: 640px) { footer { flex-direction: row; align-items: center; justify-content: space-between; } }
-    .footer-domain { color: #3a6349; font-size: 0.78rem; font-weight: 300; font-family: monospace; }
-    .footer-right { display: flex; align-items: center; gap: 1.5rem; }
-    .footer-copy, .footer-loc { color: #2d4a38; font-size: 0.75rem; }
-  </style>
+<script>
+if (window.location.hostname === 'app.geoagro.ca') {
+  window.location.replace(
+    'https://019e4a9a-9252-3465-af7b-92c46fe0dd38.share.connect.posit.cloud' +
+    window.location.pathname +
+    window.location.search
+  );
+}
+</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GeoAgro — Bientôt disponible</title>
+<meta name="description" content="GeoAgro combine données géospatiales et expertise agronomique pour éclairer les décisions liées aux terres agricoles au Québec." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: #0f2018;
+  color: #f0ebe0;
+  font-family: 'Outfit', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+:focus-visible { outline: 2px solid #52b788; outline-offset: 3px; border-radius: 3px; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+/* Layout */
+.page { position: relative; min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+/* Background SVG */
+.bg-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Grain overlay */
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  mix-blend-mode: soft-light;
+  opacity: 0.35;
+}
+/* Content */
+.content { position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100vh; }
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(82,183,136,0.1);
+}
+.logo { display: flex; align-items: center; gap: 0.75rem; }
+.logo-text {
+  font-size: 1.25rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #d4a853;
+  font-weight: 500;
+}
+.header-right { display: flex; align-items: center; gap: 1.25rem; }
+.coords {
+  font-family: 'Outfit', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: #4a8c64;
+  opacity: 0.7;
+  font-weight: 300;
+  display: none;
+}
+@media(min-width: 640px) { .coords { display: block; } }
+/* Lang toggle */
+.lang-btn {
+  background: transparent;
+  border: 1px solid rgba(82,183,136,0.25);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  color: #8cad9a;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.lang-btn:hover { color: #d4a853; border-color: rgba(212,168,83,0.45); }
+.lang-current { color: #d4a853; }
+.lang-sep { margin: 0 0.4rem; color: #2d6a4f; }
+/* Main section */
+main { flex: 1; display: flex; align-items: center; padding: 3rem 2rem; }
+@media(min-width: 768px) { main { padding: 3rem 4rem; } }
+.hero { max-width: 42rem; animation: fadeUp 0.9s ease both; }
+/* Badge */
+.badge { display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 2.5rem; }
+.badge-dot {
+  width: 0.5rem; height: 0.5rem;
+  border-radius: 50%;
+  background: #52b788;
+  box-shadow: 0 0 8px #52b788;
+  animation: pulse 2s infinite;
+}
+.badge-text { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; color: #52b788; font-weight: 400; }
+/* Headline */
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  color: #f0ebe0;
+  font-weight: 600;
+  line-height: 1.08;
+  margin-bottom: 1.5rem;
+}
+h1 em { color: #d4a853; font-style: italic; }
+.divider { width: 3rem; height: 2px; background: linear-gradient(90deg, #52b788, transparent); margin-bottom: 2rem; }
+p.desc { color: #8cad9a; font-size: 1rem; font-weight: 300; line-height: 1.625; max-width: 38ch; margin-bottom: 3rem; }
+/* Success */
+.success-box {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  background: rgba(82,183,136,0.1);
+  border: 1px solid rgba(82,183,136,0.25);
+  color: #74c69d;
+  font-size: 0.9rem;
+}
+/* Form */
+.form-row { display: flex; flex-direction: column; gap: 0.75rem; }
+@media(min-width: 640px) { .form-row { flex-direction: row; } }
+.input-wrap { flex: 1; position: relative; }
+input[type="email"] {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(82,183,136,0.2);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  color: #f0ebe0;
+  font-size: 0.9rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 300;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+input[type="email"]::placeholder { color: rgba(138,180,160,0.35); }
+input[type="email"]:focus { border-color: rgba(82,183,136,0.5); background: rgba(255,255,255,0.06); }
+input[type="email"].error { border-color: rgba(220,100,80,0.6); }
+.field-error { color: rgba(220,100,80,0.9); font-size: 0.75rem; margin-top: 0.4rem; }
+.submit-btn {
+  background: linear-gradient(135deg, #2d6a4f 0%, #40916c 100%);
+  color: #f0ebe0;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.85rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(40,100,70,0.35);
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #40916c 0%, #52b788 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(40,100,70,0.5);
+}
+.submit-btn:disabled { background: rgba(45,106,79,0.5); cursor: default; }
+.spin { animation: spin 1s linear infinite; }
+.trust { margin-top: 1.25rem; color: #3a6349; font-size: 0.78rem; font-weight: 300; }
+/* Footer */
+footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem 2rem;
+  border-top: 1px solid rgba(82,183,136,0.08);
+}
+@media(min-width: 640px) { footer { flex-direction: row; align-items: center; justify-content: space-between; } }
+.footer-domain { color: #3a6349; font-size: 0.78rem; font-weight: 300; font-family: monospace; }
+.footer-right { display: flex; align-items: center; gap: 1.5rem; }
+.footer-copy, .footer-loc { color: #2d4a38; font-size: 0.75rem; }
+</style>
 </head>
 <body>
-
 <!-- Grain overlay -->
 <svg class="grain" aria-hidden="true">
   <filter id="grain">
@@ -271,6 +251,7 @@
         </svg>
         <span class="logo-text">GeoAgro</span>
       </div>
+
       <div class="header-right">
         <div class="coords" aria-hidden="true">
           <span>45°30′N</span>
@@ -293,14 +274,14 @@
         </div>
 
         <h1 id="headline">
-          La technologie<br>
+          La donnée<br>
           <em>géospatiale</em><br>
-          au service du sol.
+          au service du territoire agricole.
         </h1>
 
         <div class="divider"></div>
 
-        <p class="desc" id="desc">GeoAgro développe des outils de données géospatiales pour l'agriculture de précision — cartographie des champs, analyse des sols, et aide à la décision agronomique adaptés aux réalités du Canada.</p>
+        <p class="desc" id="desc">GeoAgro combine données géospatiales et expertise agronomique pour éclairer les décisions liées aux terres agricoles au Québec.</p>
 
         <div id="form-area">
           <form id="signup-form" novalidate>
@@ -348,174 +329,173 @@
 </div>
 
 <script>
-  document.getElementById('year').textContent = new Date().getFullYear();
+document.getElementById('year').textContent = new Date().getFullYear();
 
-  const translations = {
-    fr: {
-      htmlLang: 'fr',
-      badge: 'Bientôt disponible',
-      headline: 'La technologie<br><em>géospatiale</em><br>au service du sol.',
-      desc: "GeoAgro développe des outils de données géospatiales pour l'agriculture de précision — cartographie des champs, analyse des sols, et aide à la décision agronomique adaptés aux réalités du Canada.",
-      placeholder: 'votre@courriel.ca',
-      submit: 'Nous avertir',
-      submitting: 'Envoi…',
-      success: 'Merci! Nous vous tiendrons informé au lancement.',
-      invalid: 'Veuillez entrer une adresse courriel valide.',
-      error: 'Une erreur s\'est produite. Veuillez réessayer.',
-      trust: 'Pas de spam. Uniquement une notification au lancement. Désabonnement en un clic.',
-      location: 'Québec, Canada',
-      langCurrent: 'FR',
-      langOther: 'EN',
-      langAria: 'Switch to English',
-      appBtn: "Accéder à l'app",
-      appTrust: 'Diagnostic spatial agricole — 1 $/ha',
-    },
-    en: {
-      htmlLang: 'en',
-      badge: 'Coming soon',
-      headline: 'Geospatial<br><em>technology</em><br>rooted in the soil.',
-      desc: 'GeoAgro builds geospatial data tools for precision agriculture — field mapping, soil analysis, and agronomic decision support tailored to Canadian realities.',
-      placeholder: 'you@email.ca',
-      submit: 'Notify me',
-      submitting: 'Sending…',
-      success: "Thank you! We'll let you know at launch.",
-      invalid: 'Please enter a valid email address.',
-      error: 'Something went wrong. Please try again.',
-      trust: 'No spam. Only a launch notification. One-click unsubscribe.',
-      location: 'Quebec, Canada',
-      langCurrent: 'EN',
-      langOther: 'FR',
-      langAria: 'Passer au français',
-      appBtn: 'Access the app',
-      appTrust: 'Spatial agricultural diagnostic — 1 $/ha',
-    }
-  };
-
-  let lang = 'fr';
-  let state = 'idle'; // idle | loading | success | error
-  let touched = false;
-
-  const emailInput = document.getElementById('email-input');
-  const fieldError = document.getElementById('field-error');
-  const submitBtn = document.getElementById('submit-btn');
-  const btnLabel = document.getElementById('btn-label');
-  const formArea = document.getElementById('form-area');
-  const successBox = document.getElementById('success-box');
-  const langBtn = document.getElementById('lang-btn');
-
-  function isValidEmail(v) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const translations = {
+  fr: {
+    htmlLang: 'fr',
+    badge: 'Bientôt disponible',
+    headline: 'La donnée<br><em>géospatiale</em><br>au service du territoire agricole.',
+    desc: "GeoAgro combine données géospatiales et expertise agronomique pour éclairer les décisions liées aux terres agricoles au Québec.",
+    placeholder: 'votre@courriel.ca',
+    submit: 'Nous avertir',
+    submitting: 'Envoi…',
+    success: 'Merci! Nous vous tiendrons informé au lancement.',
+    invalid: 'Veuillez entrer une adresse courriel valide.',
+    error: 'Une erreur s\'est produite. Veuillez réessayer.',
+    trust: 'Pas de spam. Uniquement une notification au lancement. Désabonnement en un clic.',
+    location: 'Québec, Canada',
+    langCurrent: 'FR',
+    langOther: 'EN',
+    langAria: 'Switch to English',
+    appBtn: "Accéder à l'app",
+    appTrust: 'Diagnostic spatial agricole — 1 $/ha',
+  },
+  en: {
+    htmlLang: 'en',
+    badge: 'Coming soon',
+    headline: 'Geospatial<br><em>data</em><br>rooted in agricultural land.',
+    desc: 'GeoAgro combines geospatial data and agronomic expertise to inform decisions related to agricultural land in Quebec.',
+    placeholder: 'you@email.ca',
+    submit: 'Notify me',
+    submitting: 'Sending…',
+    success: "Thank you! We'll let you know at launch.",
+    invalid: 'Please enter a valid email address.',
+    error: 'Something went wrong. Please try again.',
+    trust: 'No spam. Only a launch notification. One-click unsubscribe.',
+    location: 'Quebec, Canada',
+    langCurrent: 'EN',
+    langOther: 'FR',
+    langAria: 'Passer au français',
+    appBtn: 'Access the app',
+    appTrust: 'Spatial agricultural diagnostic — 1 $/ha',
   }
+};
 
-  function applyLang() {
-    const t = translations[lang];
-    document.documentElement.lang = t.htmlLang;
-    document.getElementById('badge-text').textContent = t.badge;
-    document.getElementById('headline').innerHTML = t.headline;
-    document.getElementById('desc').textContent = t.desc;
-    emailInput.placeholder = t.placeholder;
-    btnLabel.textContent = state === 'loading' ? t.submitting : t.submit;
-    document.getElementById('success-msg').textContent = t.success;
-    document.getElementById('trust-text').textContent = t.trust;
-    document.getElementById('footer-loc').textContent = t.location;
-    document.getElementById('lang-current').textContent = t.langCurrent;
-    document.getElementById('lang-other').textContent = t.langOther;
-    langBtn.setAttribute('aria-label', t.langAria);
-    if (state === 'error') showError(t.error);
-    // Update app button labels if visible
-    const appBtnLabel = document.getElementById('app-btn-label');
-    const appBtnTrust = document.getElementById('app-btn-trust');
-    if (appBtnLabel) appBtnLabel.textContent = t.appBtn;
-    if (appBtnTrust) appBtnTrust.textContent = t.appTrust;
-  }
+let lang = 'fr';
+let state = 'idle'; // idle | loading | success | error
+let touched = false;
 
-  function showError(msg) {
-    fieldError.textContent = msg;
-    fieldError.style.display = 'block';
-    emailInput.classList.add('error');
-  }
+const emailInput = document.getElementById('email-input');
+const fieldError = document.getElementById('field-error');
+const submitBtn = document.getElementById('submit-btn');
+const btnLabel = document.getElementById('btn-label');
+const formArea = document.getElementById('form-area');
+const successBox = document.getElementById('success-box');
+const langBtn = document.getElementById('lang-btn');
 
-  function clearError() {
-    fieldError.style.display = 'none';
-    emailInput.classList.remove('error');
-  }
+function isValidEmail(v) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+}
 
-  langBtn.addEventListener('click', () => {
-    lang = lang === 'fr' ? 'en' : 'fr';
-    applyLang();
-  });
+function applyLang() {
+  const t = translations[lang];
+  document.documentElement.lang = t.htmlLang;
+  document.getElementById('badge-text').textContent = t.badge;
+  document.getElementById('headline').innerHTML = t.headline;
+  document.getElementById('desc').textContent = t.desc;
+  emailInput.placeholder = t.placeholder;
+  btnLabel.textContent = state === 'loading' ? t.submitting : t.submit;
+  document.getElementById('success-msg').textContent = t.success;
+  document.getElementById('trust-text').textContent = t.trust;
+  document.getElementById('footer-loc').textContent = t.location;
+  document.getElementById('lang-current').textContent = t.langCurrent;
+  document.getElementById('lang-other').textContent = t.langOther;
+  langBtn.setAttribute('aria-label', t.langAria);
+  if (state === 'error') showError(t.error);
 
-  emailInput.addEventListener('input', () => {
-    if (state === 'error') { state = 'idle'; clearError(); }
-    if (touched && !isValidEmail(emailInput.value)) {
-      showError(translations[lang].invalid);
-    } else {
-      clearError();
-    }
-  });
+  // Update app button labels if visible
+  const appBtnLabel = document.getElementById('app-btn-label');
+  const appBtnTrust = document.getElementById('app-btn-trust');
+  if (appBtnLabel) appBtnLabel.textContent = t.appBtn;
+  if (appBtnTrust) appBtnTrust.textContent = t.appTrust;
+}
 
-  emailInput.addEventListener('blur', () => {
-    touched = true;
-    if (emailInput.value && !isValidEmail(emailInput.value)) {
-      showError(translations[lang].invalid);
-    }
-  });
+function showError(msg) {
+  fieldError.textContent = msg;
+  fieldError.style.display = 'block';
+  emailInput.classList.add('error');
+}
 
-  document.getElementById('signup-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    touched = true;
-    const t = translations[lang];
-    const email = emailInput.value.trim();
+function clearError() {
+  fieldError.style.display = 'none';
+  emailInput.classList.remove('error');
+}
 
-    if (!isValidEmail(email)) {
-      showError(t.invalid);
-      return;
-    }
-
-    state = 'loading';
-    btnLabel.textContent = t.submitting;
-    submitBtn.disabled = true;
-    clearError();
-
-    try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, language: lang }),
-      });
-
-      if (!res.ok) throw new Error('Server error');
-
-      state = 'success';
-      formArea.style.display = 'none';
-      successBox.style.display = 'flex';
-    } catch {
-      state = 'error';
-      btnLabel.textContent = t.submit;
-      submitBtn.disabled = false;
-      showError(t.error);
-    }
-  });
-
+langBtn.addEventListener('click', () => {
+  lang = lang === 'fr' ? 'en' : 'fr';
   applyLang();
+});
 
-  fetch('/.netlify/functions/config')
-    .then(r => r.json())
-    .then(({ mode, appUrl }) => {
-      if (mode === 'app' && appUrl) {
-        document.getElementById('form-area').style.display = 'none';
-        document.getElementById('app-btn-area').style.display = 'block';
-        document.querySelector('#app-btn-area a').href = appUrl;
-        const label = document.getElementById('app-btn-label');
-        const trust = document.getElementById('app-btn-trust');
-        if (label && trust) {
-          const t = translations[lang] || translations.fr;
-          label.textContent = t.appBtn;
-          trust.textContent = t.appTrust;
-        }
+emailInput.addEventListener('input', () => {
+  if (state === 'error') { state = 'idle'; clearError(); }
+  if (touched && !isValidEmail(emailInput.value)) {
+    showError(translations[lang].invalid);
+  } else {
+    clearError();
+  }
+});
+
+emailInput.addEventListener('blur', () => {
+  touched = true;
+  if (emailInput.value && !isValidEmail(emailInput.value)) {
+    showError(translations[lang].invalid);
+  }
+});
+
+document.getElementById('signup-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  touched = true;
+  const t = translations[lang];
+  const email = emailInput.value.trim();
+
+  if (!isValidEmail(email)) {
+    showError(t.invalid);
+    return;
+  }
+
+  state = 'loading';
+  btnLabel.textContent = t.submitting;
+  submitBtn.disabled = true;
+  clearError();
+
+  try {
+    const res = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, language: lang }),
+    });
+    if (!res.ok) throw new Error('Server error');
+    state = 'success';
+    formArea.style.display = 'none';
+    successBox.style.display = 'flex';
+  } catch {
+    state = 'error';
+    btnLabel.textContent = t.submit;
+    submitBtn.disabled = false;
+    showError(t.error);
+  }
+});
+
+applyLang();
+
+fetch('/.netlify/functions/config')
+  .then(r => r.json())
+  .then(({ mode, appUrl }) => {
+    if (mode === 'app' && appUrl) {
+      document.getElementById('form-area').style.display = 'none';
+      document.getElementById('app-btn-area').style.display = 'block';
+      document.querySelector('#app-btn-area a').href = appUrl;
+      const label = document.getElementById('app-btn-label');
+      const trust = document.getElementById('app-btn-trust');
+      if (label && trust) {
+        const t = translations[lang] || translations.fr;
+        label.textContent = t.appBtn;
+        trust.textContent = t.appTrust;
       }
-    })
-    .catch(() => {}); // silencieux si la fonction n'est pas disponible
+    }
+  })
+  .catch(() => {}); // silencieux si la fonction n'est pas disponible
 </script>
 </body>
 </html>
